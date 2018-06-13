@@ -1,4 +1,4 @@
-﻿@model TargetFinder.Models.Target.Target
+﻿ @model TargetFinder.Models.Target.Target
 
 @{
     ViewData["Title"] = "Details";
@@ -39,6 +39,10 @@
         </dt>
         <dd>
             <p style="white-space: pre-line">@Model.Description</p>
+        </dd>
+        <dd>
+            @{ var imagePath = "/images/" + Model.TargetId + ".jpg";}
+            <img src = @imagePath width="500" height="500"/>
         </dd>
     </dl>
 </div>

@@ -5,6 +5,17 @@
     <UserSecretsId>aspnet-TargetFinder-E6FDB960-46CD-4DA8-834D-5636668A899B</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Views\Image\**" />
+    <Content Remove="Views\Image\**" />
+    <EmbeddedResource Remove="Views\Image\**" />
+    <None Remove="Views\Image\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\ImageController.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />

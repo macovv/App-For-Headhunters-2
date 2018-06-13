@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using TargetFinder.Data;
 using TargetFinder.Models;
 using TargetFinder.Services;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace TargetFinder
 {
@@ -32,6 +34,10 @@ namespace TargetFinder
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            //files hander
+            services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+            //
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();

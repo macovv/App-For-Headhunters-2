@@ -1,0 +1,22 @@
+﻿@{
+
+        Layout = null;
+
+    }
+
+        <form asp-controller="Targets" asp-action="AddPhoto" method="post"
+              enctype="multipart/form-data">
+
+
+
+            <input type="file" name="file" />
+
+            <button type="submit">Upload Image</button>
+
+        </form>
+
+
+
+        <br />
+
+        <label>Uploaded File= @ViewData["FilePath"]</label>

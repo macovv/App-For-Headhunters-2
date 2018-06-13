@@ -15,13 +15,13 @@ namespace TargetFinder.Controllers
 {
     public class TargetsController : Controller
     {
-        private IHostingEnvironment _hostingEnvironment;
-
+        private static int currentIDNum;
+        private readonly IHostingEnvironment _appEnvironment;
         private readonly TargetFinderContext _context;
 
         public TargetsController(TargetFinderContext context, IHostingEnvironment environment)
         {
-            _hostingEnvironment = environment;
+            _appEnvironment = environment;
             _context = context;
         }
 
@@ -144,6 +144,12 @@ namespace TargetFinder.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            string path_Root = _appEnvironment.WebRootPath;
+            string path_to_Images = path_Root + "\\images\\" + id + ".jpg";
+        
+            if (System.IO.File.Exists(path_to_Images))
+                System.IO.File.Delete(path_to_Images);
+
             var target = await _context.Target.SingleOrDefaultAsync(m => m.TargetId == id);
             _context.Target.Remove(target);
             await _context.SaveChangesAsync();
@@ -154,5 +160,58 @@ namespace TargetFinder.Controllers
         {
             return _context.Target.Any(e => e.TargetId == id);
         }
+
+        [HttpGet] //1.Load
+
+        public IActionResult AddPhoto(int id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var target =  _context.Target.SingleOrDefaultAsync(m => m.TargetId == id);
+            if (target == null)
+            {
+                return NotFound();
+            }
+            currentIDNum = id;
+            //--< Upload Form >--
+            return View();
+            //--</ Upload Form >--
+        }
+
+        [HttpPost] //Postback
+        public async Task<IActionResult> AddPhoto(IFormFile file)
+
+        {
+
+            //--------< Upload_ImageFile() >--------
+
+            //< check >
+            if (file == null || file.Length == 0) return Content("file not selected");
+            //</ check >
+
+            //< get Path >
+            string path_Root = _appEnvironment.WebRootPath;
+            string path_to_Images = path_Root + "\\images\\" + currentIDNum.ToString() + ".jpg";
+            //</ get Path >
+
+            //< Copy File to Target >
+            using (var stream = new FileStream(path_to_Images, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            //</ Copy File to Target >
+
+            //< output >
+            ViewData["FilePath"] = path_to_Images;
+            return RedirectToAction("index");
+            //</ output >
+
+            //--------</ Upload_ImageFile() >--------
+        }
+
     }
 }
